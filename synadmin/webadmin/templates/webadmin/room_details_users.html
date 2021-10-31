@@ -1,0 +1,55 @@
+{% extends 'webadmin/base.html' %}
+
+{% block content %}
+
+<p class="title is-1">Raumverwaltung</p>
+<p class="subtitle is-3">Powerlevel der Benutzer verwalten</p>
+<section class="section">
+
+    <div class="box">
+        <h3 class="title">Wichtiger Hinweis</h3>
+        <b>Raumadminstration erfolgt über einen Matrix Clienten wie Synod.im. </br>Entsprechende Berechtigungen können
+            für normale Benutzer hier eingerichtet werden.</b>
+        <p class="has-text-warning has-background-black">
+            Die bisherige Admin API sieht keinen Weg vor, diese Änderung zurückzunehmen! <br> Nur der Benutzer selber kann seinen eigene Status zurücksetzen
+        </p>
+        <p class="has-text-info">
+            Hier nur den Raum Admin setzen. Alle weitere Nutzerberechtigungen über einen Matrix Clienten tätigen!
+        </p>
+
+        <div class="block">
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Options</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <th>Name</th>
+                    <th>Options</th>
+                </tr>
+                </tfoot>
+                <tbody>
+
+                {% for u in room_users %}
+                <tr>
+                    <td>
+                        {{u}}
+                    </td>
+                    <td><a href="{% url 'room_powerlevel' matrix_room_id=room_id matrix_user_id=u %}">
+                        Zum Admin machen</a></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</section>
+
+
+{% endblock %}

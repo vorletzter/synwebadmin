@@ -1,0 +1,67 @@
+{% extends 'webadmin/base.html' %}
+
+{% block content %}
+
+<p class="title is-1">Matrix Admin API Frontend</p>
+<p class="subtitle is-3">Startseite (todo! / Work in Progress)</p>
+
+<div>
+Diese Seite ist ein wilder Mischmasch für das Proof-of-Conept. Daher sind "Admin", und "Mandanten" Hilfestellungen beide auf dieser Seite
+</div>
+
+
+
+<p class="title is-3">Was ist das?</p>
+Über dieses Frontend kann ein Synapse über die Admin API verwaltet werden. In der  <a href="/admin"> Admin UI</a> können beliebige Admin Accounts (Adminaccounts) erstellt werden.
+Diese Adminaccounts werden dann einem oder mehreren Mandanzen (Tenancys) zugewiesen. Eine Tenanncy kann von einem oder mehreren Benutzerkonten für diese Seite verwaltet werden.
+Die Webseite speichert alle zu einer Tenancy gehörigen Benutzer und Räume in einer <b>eigenen Datenbank</b>. Auf dem Synapse Server werden keine entsprechenden Daten oder Veränderungen gespeichert.
+Röume/Benutzer können von mehreren Tenancys verwaltet werden. Auch ist es in der <a href="/admin"> Admin UI</a> möglich bestehenden Konten/Räume einer oder mehrern Tenancys zuzuweisen oder sie auch einfach freizugeben.
+Die Software hält im Regelfall viele der entsprechenden Daten im eigenen Cache vor. Dies betrifft z.B. den <i>Angezeigten Namen von Räumen & Benutzern</i>
+Über Verwaltung->Sync with Sever können alle verwalteten Objekte mit dem Server synchronisiert werden. Ansonsten wird jedes Objekt automatisch mit der Datenbank der Webseite abgeglichen, wenn es einzelen abgerufen oder verändert wird.
+
+Im Regelfal werden im Frontend (Benutzereingaben) und im Backend (auf eben der Modelle) jeweils geprüft, ob der entsprechende Mandant auch die Berechtigungen hat, ein Modell zu bearbeiten. Über Änderungen in der URL oder POST <b>sollten daher niemals Änderungen an den Server durchgereicht werden</b>
+Die erstellten Konten sind vollwertige Konten im Sinne des Matrix Netzwerkes. Alle Funktionen (Passwort ändern z.B.) stehen den Benutzer zu verfügung. Alleridngs kann ein Mandant auch für alle ihm zugewiesenen Konten die Passwörter ändern.
+
+<p class="title is-3">Use Case</p>
+<b>Die Grundsätzliche Idee ist, dass ein Mandant für seinen Bereich über diese UI Räume und Benutzer erstellen und verwalten kann</b> Ein Usecase wäre, z.B. eine Konfigruppe. Der Mandant erstellt einen Raum (oder Räume) für seine Konfirmand:innen.
+Anschließend erstellt er die entsprechenden Benutzerkonten und fügt Sie den Räumen hinzu. Als letzten Schritt werden "onboarding Infos" ausgedruckt, die den Konfis für eine erste Anmeldung ausgehändigt werden. Scannen die Konfis den Code mit Synod.im sind sie sofort in der App und können auf alle Räume zugreifen.
+Es ist denkbar, dass der QR-Code auch für weitere Anmeldungen gültig bleibt, z.B. indem Passwort/Benutzer name darin codiert sind.
+
+<p class="title is-3">Erste Schritte</p>
+<ul>
+    <li><span class="tag"> 1 </span>Erstelle eine Raum: Verwalten -> Räume -> Neuer Raum</li>
+    <li><span class="tag"> 2 </span> Erstelle einen oder mehrer Benutzer: Verwalten -> Benutzer -> Neuer Benutzer</li>
+    <li><span class="tag"> 3 </span>
+        Über Räume->Benutzerverwaltung mache dich selber zu Admin
+    <i>Du musst Mitglied in diesem Raum sein. Entweder einem öffentlichen Raum beitreten oder Siehe "Was ist wenn..." || </i>
+    </li>
+    <li><span class="tag"> 4 </span>Konfiguriere den Raum über einen Matrix Clienten</li>
+</ul>
+
+<p class="title is-3">Was ist wenn...</p>
+<ul>
+    <li><span class="tag"> 1 </span>
+        <b>Ich ein bestehendes Konto/Raum verwalten möchte?</b></br>
+        Füge den Raum/Konto über die <a href="/admin"> Admin UI</a> deinem Mandaten/Tenancy hinzu oder melde dich beim Support
+    </li>
+    <li><span class="tag"> 2 </span>
+        <b>Serveradmin: Einen Tenant Erstellen</b></br>
+        Über die <a href="/admin"> Admin UI</a> eine Tenancy erstellen. Dann einen Benutzer: Users (+add) -> Daten eingeben -> Im anschließenden Profil in jedem Fall ausfüllen 1) Tenancy (ggf. erstellen) und Matrix user id. Sollte es die Matrix ID noch nicht geben, einfach der Datenbank hinzufügen und der Tenancy zuweisen.
+    </li>
+</ul>
+
+<p class="title is-3">Was für den Proof-of-Concept noch fehlt</p>
+<ul>
+    <li><span class="tag"> 1 </span>
+        Passwort für Benutzer ändern
+    </li>
+    <li><span class="tag"> 2 </span>
+        Einen "Onboard"-PDF erstellen. Die Idee ist, dass der Mandant für ein verwaltetes Konto einen PDF mit einme QR-Code erstellen kann.
+        Der QR-Code kann dann in Synod.im gescannt werden und der Benutzer wird damit angemeldet. <b>Synod.im müsste entsprechend angepasst werden.</b>
+    </li>
+    <li><span class="tag"> 3 </span>
+        Account einstellungen verändern, z.B. das hinzufügen/ändern einer Mailadressem, damit Benutzer sich (wieder) selber verwalten können.
+    </li>
+</ul>
+
+{% endblock %}

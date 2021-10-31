@@ -1,0 +1,32 @@
+{% extends 'webadmin/base.html' %}
+
+{% block content %}
+
+<p class="title is-1">Einen Benutzer in einen Raum hinzufügen</p>
+<p class="subtitle is-3">{{matrix_id}}</p>
+
+
+<form action="{% url 'user_join' matrix_id %}" method="post">
+
+    {% csrf_token %}
+    {{ form.errors }}
+
+    <section class="section">
+        <div class="box">
+            <h3 class="title">Räume auswählen</h3>
+            {{ form.rooms }}
+            </br>
+            <i>Hinweis: Die Raumnamen wurden aus dem Cache geladen!</i>
+        </div>
+        <p class="control">
+            <button class="button is-success">
+                Do it
+            </button>
+        </p>
+    </section>
+</form>
+
+{% endblock %}
+
+
+

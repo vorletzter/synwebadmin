@@ -1,0 +1,41 @@
+{% extends 'webadmin/base.html' %}
+
+{% block content %}
+
+<p class="title is-1">Einen neuen Raum erstellen</p>
+<p class="subtitle is-3">und die Raumverwaltung aktivieren</p>
+
+<form action="{% url 'room_create' %}" method="post">
+    {% csrf_token %}
+    {{ form.errors }}
+
+    <section class="section">
+        <div class="box">
+            <h3 class="title">Name des Raums</h3>
+            {{ form.room }}
+        </div>
+        <div class="box">
+            <h3 class="title">Weitere Raumoptionen</h3>
+            <label class="checkbox">
+                {{ form.public }}
+                Einen <b>öffentlichen Raum</b> erstellen - Jeder kann den Raum betreten
+            </label>
+            <br>
+            <label class="checkbox">
+                {{ form.encrypted }}
+                <b>Verschlüsslung</b> für den Raum aktivieren(<i>kann später aktiviert, aber nie wieder deaktiviert
+                werden</i>)
+            </label>
+        </div>
+        <p class="control">
+            <button class="button is-success">
+                Do it
+            </button>
+        </p>
+    </section>
+
+</form>
+{% endblock %}
+
+
+

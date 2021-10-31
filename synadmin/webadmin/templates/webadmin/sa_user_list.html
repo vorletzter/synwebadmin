@@ -1,0 +1,34 @@
+{% extends 'webadmin/base.html' %}
+
+{% block content %}
+
+<table class="table">
+  <thead>
+    <tr>
+        <th>Name</th>
+        <th>Displayname</th>
+        <th>Options</th>
+    </tr>
+  </thead>
+  <tfoot>
+    <tr>
+        <th>Name</th>
+        <th>Displayname</th>
+        <th>Options</th>
+    </tr>
+  </tfoot>
+  <tbody>
+
+{% for u in users %}
+    <tr>
+        <td>{{u.name}}</td>
+        <td>{{u.displayname}}</td>
+        <td><a  href="{% url 'user_join' matrix_id=u.name %}">Join Room</a></td>
+    </tr>
+{% endfor %}
+  </tbody>
+</table>
+
+
+
+{% endblock %}

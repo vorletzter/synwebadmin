@@ -1,0 +1,47 @@
+{% extends 'webadmin/base.html' %}
+
+{% block content %}
+<a  href="{% url 'room_create' %}">
+<button class="button is-primary is-rounded"> + Create Room</button>
+</a>
+
+<table class="table">
+  <thead>
+    <tr>
+        <th>Displayname</th>
+        <th>Kommentar</th>
+        <th>Internal ID</th>
+        <th>Options</th>
+    </tr>
+  </thead>
+  <tfoot>
+    <tr>
+        <th>Displayname</th>
+        <th>Kommentar</th>
+        <th>Internal ID</th>
+        <th>Options</th>
+    </tr>
+  </tfoot>
+  <tbody>
+    {% for room in rooms %}
+        <tr>
+            <td>
+                {{room.cached_name}}
+            </td>
+            <td>
+                {{room.comment}}
+            </td>
+            <td>
+                <!--<button class="button is-outlined"> -->
+                {{room.matrix_room_id}}
+                <!-- </button> -->
+            </td>
+            <td><a  href="{% url 'room_details' matrix_room_id=room.matrix_room_id %}">Raumdetails</a> | <a  href="{% url 'room_users' matrix_room_id=room.matrix_room_id %}">Benutzerverwaltung</a> | Freigeben | Purge</td>
+        </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+
+{% endblock %}

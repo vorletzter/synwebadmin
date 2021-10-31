@@ -1,0 +1,41 @@
+{% extends 'webadmin/base.html' %}
+
+{% block content %}
+
+<a  href="{% url 'user_create' %}">
+<button class="button is-primary is-rounded"> + Benutzer erstellen</button>
+</a>
+
+<table class="table">
+  <thead>
+    <tr>
+        <th>Name</th>
+        <th>Displayname</th>
+        <th>Kommentar</th>
+        <th>Options</th>
+    </tr>
+  </thead>
+  <tfoot>
+    <tr>
+        <th>Name</th>
+        <th>Displayname</th>
+        <th>Kommentar</th>
+        <th>Options</th>
+    </tr>
+  </tfoot>
+  <tbody>
+
+{% for u in users %}
+    <tr>
+        <td><a  href="{% url 'user_details' matrix_user_id=u.name %}">{{u.name}}</a></td>
+        <td>{{u.cached_displayname}}</td>
+        <td>{{u.comment}}</td>
+        <td><a  href="{% url 'user_join' matrix_id=u.name %}">Join Room</a> | <a  href="{% url 'user_set_password' matrix_user_id=u.name %}">Passwort ändern</a> | Freigeben | Deaktivieren | Löschen</td>
+    </tr>
+{% endfor %}
+  </tbody>
+</table>
+
+
+
+{% endblock %}

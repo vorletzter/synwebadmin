@@ -1,0 +1,53 @@
+version: "3.3"
+
+services:
+  nginx:
+    image: nginx:mainline
+    restart: always
+    volumes:
+      - ./data/etc/nginx:/etc/nginx/conf.d/
+      # Shared Directorys for Django/Nginx to serv static & media
+      - ./data/www/static:/opt/services/static
+      - ./data/www/media:/opt/services/media
+    networks:
+      - proxy
+      - default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.weba.rule=Host(`webadmin.predigthub.de`)"
+      - "traefik.http.routers.weba.entrypoints=websecure"
+      - "traefik.http.routers.weba.tls=true"
+      - "traefik.http.routers.weba.tls.certresolver=leresolver"
+    depends_on:
+      - djangoapp
+
+  djangoapp:
+    build: .
+    restart: always
+    volumes:
+      - ./data/db.sqlite3:/opt/services/djangoapp/db.sqlite3
+      # Shared Directorys for Django/Nginx to serve static & media
+      - ./data/www/static:/opt/services/djangoapp/static
+      - ./data/www/media:/opt/services/djangoapp/media
+    networks:
+      - default
+      
+networks:
+  proxy:
+    external:
+      name: proxy
+  default:
+    driver: bridge
+
+
+## static files will be in /opt/services/djangoapp/static/ -> To use a volume see below
+## media files will be in /opt/services/djangoapp/media/ -> To use a volume see below
+## sqlight files will be in /opt/services/djangoapp/db.sqlite3 -> To use a volume see below
+
+##
+## Please run the following command after static or media files have changed!
+## docker-compose run djangoapp python manage.py collectstatic --no-input
+##
+## docker-compose run djangoapp python manage.py createmigrations
+## docker-compose run djangoapp python manage.py migrate
+## docker-compose run djangoapp python manage.py createsuperuser

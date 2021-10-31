@@ -1,0 +1,120 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Synod.im - Mandanten Admin Frontend</title>
+
+    <link rel="stylesheet" href="{% static 'bulma/css/bulma.min.css' %}">
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="{% url 'welcome' %}">
+            <!-- <img src="https://bulma.io/images/bulma-logo.png1" width="112" height="28"> -->
+            <img src="{% static 'images/synodim.png' %}">
+            <b>Synod.im Admin</b>
+        </a>
+
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+            <a href="/" class="navbar-item">
+                Home
+            </a>
+
+            <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">
+                    Verwalten
+                </a>
+
+                <div class="navbar-dropdown">
+                    <a href="{% url 'user_list' %}" class="navbar-item">
+                        Benutzer
+                    </a>
+                    <a href="{% url 'room_list' %}" class="navbar-item">
+                        Räume
+                    </a>
+                    <hr class="navbar-divider">
+                    <a class="navbar-item">
+                        Report an issue
+                    </a>
+                    <a href="{% url 'sync' %}" class="navbar-item">
+                        Sync with server
+                    </a>
+                </div>
+            </div>
+            {% if user.is_authenticated %}
+            <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">
+                    {{ request.user.profile.current_tenancy }}
+                </a>
+                <div class="navbar-dropdown">
+                    {% for tenancy in request.user.profile.get_available_tenancies %}
+                    <a href="{% url 'set_tenancy' tenancy_id=tenancy.id %}" class="navbar-item">
+                        {{tenancy}}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+
+        <div>
+            <div class="navbar-end">
+                <div class="navbar-item">
+                </div>
+                <form>
+                    <div class="field has-addons mt-2">
+                        <div class="control">
+                            <input class="input is-transparent" type="text" placeholder="Benutzer">
+                        </div>
+                        <div class="control">
+                            <a class="button">
+                                Suchen
+                            </a>
+                        </div>
+                    </div>
+                </form>
+                <div class="buttons">
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'logout' %}" class="button is-primary">
+                        Logout {{user.username }}
+                    </a>
+                    {% else %}
+                    <a href="{% url 'login' %}" class="button is-primary">
+                        Log in
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<section class="section">
+    <div class="container">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="notification {{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+
+        {% endif %}
+
+        {% block content %} {% endblock %}
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,38 @@
+{% extends 'webadmin/base.html' %}
+
+{% block content %}
+
+<p class="title is-1">Einen neuen Benutzer erstellen</p>
+<p class="subtitle is-3">und die die Benutzerverwaltung aktivieren</p>
+
+<form action="{% url 'user_create' %}" method="post">
+    {% csrf_token %}
+    {{ form.errors }}
+
+    <section class="section">
+        <div class="box">
+            <h3 class="title">Name des Benutzers</h3>
+            <b>Must be in the form @user:server</b>
+            {{ form.username }}
+        </div>
+        <div class="box">
+            <h3 class="title">Angezeigter Name des Benutzers</h3>
+            {{ form.displayname }}
+        </div>
+        <div class="box">
+            <h3 class="title">Passwort des Benutzers</h3>
+            {{ form.password }}
+        </div>
+
+        <p class="control">
+            <button class="button is-success">
+                Do it
+            </button>
+        </p>
+    </section>
+
+</form>
+{% endblock %}
+
+
+
