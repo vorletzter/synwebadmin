@@ -19,18 +19,20 @@ Frontend Users can create Rooms and Accounts. Join their users to their rooms. T
 
 ### Run a local Development Server
 0) Change into synadmin Directory
-cd synwebadmin
+> cd synwebadmin
 
 1) Create Python venv
-python3 -m venv ./venv
+> python3 -m venv ./venv
 
 2) Activate
-source venv/bin/activate
+> source venv/bin/activate
 
 3) Prepare
-pip install -r synadmin/requirements.txt
-python synadmin/manage.py migrate
-python synadmin/manage.py createsuperuser
+> pip install -r synadmin/requirements.txt
+> 
+> python synadmin/manage.py migrate
+> 
+> python synadmin/manage.py createsuperuser
 
 4) Run
-python synadmin/manage.py runserver
+> python synadmin/manage.py runserver
