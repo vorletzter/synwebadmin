@@ -1,3 +1,5 @@
+from json import JSONDecodeError
+
 from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
@@ -225,7 +227,11 @@ class Account(models.Model):
     '''
     def pull_details(self):
         synapse_user_admin_api = self.managed_by.get_synapse_user_admin()
-        account_details = synapse_user_admin_api.details(self.name)
+        try:
+            account_details = synapse_user_admin_api.details(self.name)
+        except JSONDecodeError as e:
+            # Json Error means, thaat there probably was someting wrong with the server (Server down...)
+            raise UserSyncError ("Konne Json nicht einlesen")
         print (account_details)
         self.cached_json = account_details
         self.matrix_user_id = account_details['name']

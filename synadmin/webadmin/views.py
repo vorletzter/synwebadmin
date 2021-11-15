@@ -1,8 +1,12 @@
+import io
+
+import qrcode
 from django.core import serializers
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, FileResponse
 import requests
+from fpdf import FPDF
 
 from .models import Adminaccount, Tenant, Account, Room
 from django.contrib.auth.decorators import login_required
@@ -14,6 +18,11 @@ from .models import UserSyncError
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse
 from functools import wraps
+
+from reportlab.pdfgen import canvas
+from reportlab.lib.utils import ImageReader
+from reportlab.lib.pagesizes import letter, A4
+from PyPDF2 import PdfFileWriter, PdfFileReader
 
 
 def handle_tenancy_permission_errors(function):
@@ -89,12 +98,61 @@ def room_powerlevel(request, matrix_room_id, matrix_user_id):
 @login_required
 @handle_tenancy_permission_errors
 def user_details(request, matrix_user_id):
-    model = request.user.profile.current_tenancy.fetch_users_details(matrix_user_id=matrix_user_id)
+    try:
+        model = request.user.profile.current_tenancy.fetch_users_details(matrix_user_id=matrix_user_id)
+    except UserSyncError as e:
+        model = request.user.profile.current_tenancy.account_set.get(matrix_user_id=matrix_user_id)
+        messages.warning(request, f"Konnte das Konto '{matrix_user_id}' nicht vom Server abrufen. Zeige Zwischenspeicher")
     # Just dump everything for now...
     data = [x for x in model.__dict__.items() if not x[0].startswith('_')]
     return render(request,
                       'webadmin/user_details.html',
                       {'user_details': data})
+
+@login_required
+@handle_tenancy_permission_errors
+def user_onboard(request, matrix_user_id):
+    #model = request.user.profile.current_tenancy.fetch_users_details(matrix_user_id=matrix_user_id)
+    model = request.user.profile.current_tenancy.account_set.filter(matrix_user_id=matrix_user_id).first()
+
+    # Generate the QR-Code
+    qr = qrcode.QRCode(version=1, box_size=5, border=1)
+    qr.add_data(f"'homeserver: '{request.user.profile.current_tenancy.adminaccount.homeserver} id:{matrix_user_id}")
+    qr.make(fit=True)
+    img = qr.make_image(fill='black', back_color='white')
+    imgByteArr = io.BytesIO()
+    img.save(imgByteArr, format=img.format)
+    imgByteArr = imgByteArr.getvalue()
+    image = ImageReader(io.BytesIO(imgByteArr))
+
+
+    # Create a file-like buffer to receive PDF data.
+    packet = io.BytesIO()
+
+    can = canvas.Canvas(packet, pagesize=A4, bottomup=0)
+    # Draw things on the PDF...
+    can.drawString(230, 295, model.matrix_user_id)
+    can.drawString(230, 330, "<ToDo>")
+    #can.drawString(220, 500, "Server: "+ request.user.profile.current_tenancy.adminaccount.homeserver)
+
+    can.drawImage(image, 210, 440)
+    can.save()
+    packet.seek(0) #move to the beginning of the StringIO buffer
+    new_pdf = PdfFileReader(packet)
+
+    existing_pdf = PdfFileReader("synod-im.pdf", "rb")
+    output = PdfFileWriter()
+    page = existing_pdf.getPage(0)
+    page.mergePage(new_pdf.getPage(0))
+    output.addPage(page)
+
+    packet2 = io.BytesIO()
+    output.write(packet2)
+
+    packet2.seek(0)
+    return FileResponse(packet2, filename='onboard_user.pdf')
+    #return FileResponse(buffer, as_attachment=True, filename='hello.pdf')
+
 
 @login_required
 def user_create(request):

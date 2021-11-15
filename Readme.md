@@ -1,11 +1,13 @@
 ### Run with docker-compose
 
-1) Modify the "setting_production.py" to fit your needs. At least you need to change ALLOWED_HOSTS
-2) Create the databse
+1) Create a new Django Secret Key
+'python -c "import secrets; print(secrets.token_urlsafe())" '
+2) Modify the "setting_production.py" to fit your needs. At least you need to change ALLOWED_HOSTS and SECRET_KEY
+3) Create the databse
 ' touch ./data/db.sqlite3) '
-3) Run the Server
+4) Run the Server
 ' docker-compose up -d '
-4) Configure and inital Setup
+5) Configure and inital Setup
 ' docker-compose run djangoapp python manage.py makemigrations '
 ' docker-compose run djangoapp python manage.py migrate '
 ' docker-compose run djangoapp python manage.py createsuperuser '
