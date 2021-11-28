@@ -39,8 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'oauth2_provider',
     'webadmin',
 ]
+
+OIDC_ENABLED=True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -138,4 +141,15 @@ MESSAGE_TAGS = {
     messages.INFO: 'is-info',
     messages.WARNING: 'is-warning',
     messages.DEBUG: 'is-light'
+}
+
+OAUTH2_PROVIDER = {
+    "OIDC_ENABLED": True,
+    "ALLOWED_REDIRECT_URI_SCHEMES": ["https"],
+    "OAUTH2_VALIDATOR_CLASS": "webadmin.oauth_validator.CustomOAuth2Validator",
+    "SCOPES": {
+        "openid": "OpenID Connect scope",
+        # ... any other scopes that you use
+    },
+    # ... any other settings you want
 }
